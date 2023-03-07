@@ -1,0 +1,19 @@
+pipeline {
+  agent {
+    label 'remote-server'
+  }
+  stages {
+    stage('Build') {
+      steps {
+        sh './gradlew build'
+      }
+    }
+    stage('Deploy') {
+      steps {
+        sshagent(['my-ssh-key']) {
+          sh 'ssh remote-user@remote-server "cd /var/www/my-app && ./deploy.sh"'
+        }
+      }
+    }
+  }
+}
